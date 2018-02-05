@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./favicon.ico">
+    <title>下载</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no minimal-ui">
+</head>
+<style>
+    body,div,ul{
+        margin:0;
+        padding: 0;
+        font-size: 14px;
+    }
+    ul{
+        list-style: none;
+    }
+    a{
+        text-decoration: none;
+        color: #333;
+    }
+
+    #header{
+        width: 80%;
+        margin: 0 auto;
+        border-top: 2px solid #eee;
+        border-bottom: 2px solid #eee;
+        padding: 10px 0 6px;
+        overflow: hidden;
+    }
+    #header .left{
+        float: left;
+        width: 300px;
+        color: #666;
+        font-size: 22px;
+        margin-top: 8px;
+    }
+
+    #header .right{
+        float: right;
+        text-align: right;
+        list-style: none;
+        margin-top: 8px;
+    }
+
+    #header .right em{
+        font-style: normal;
+        color: #ccc;
+        font-size: 12px;
+    }
+
+    #header .right li{
+        display: inline-block;
+        color: #555;
+        padding: 8px 10px;
+    }
+
+    #container{
+        text-align: center;
+    }
+
+    #container .logo,#container .code{
+        display: block;
+        width: 150px;
+        height: 150px;
+        margin: 30px auto;
+    }
+
+    #container .name-tab{
+        padding: 10px 0;
+    }
+
+    #container .name-tab em{
+        font-style: normal;
+        font-size: 12px;
+        border-radius: 3px;
+        background: #5bc0de;
+        color: #fff;
+        padding: 3px;
+    }
+
+    #J_install{
+        font-size: 18px;
+        padding: 10px 25px;
+        background: #1abc9c;
+        border: 1px solid #1ABC9C;
+        color: #fff;
+        cursor: pointer;
+        position: relative;
+    }
+
+    #container .code-text{
+        margin-top:50px;
+    }
+
+    .instruction{
+        padding: 50px 500px 0;
+        text-align: left;
+        color: #585f69;
+        font-size: 13px;
+    }
+
+    .history{
+        width: 500px;
+        margin: 100px auto;
+        border: solid 1px #1abc9c;
+        border-radius: 5px;
+        text-align: left;
+    }
+
+    .history h3{
+        margin:0;
+        padding:10px;
+        color: #fff;
+        background: #1abc9c;
+
+    }
+
+    .history .history-list{
+        width:100%;
+        text-align: center;
+        border-collapse:collapse;
+    }
+
+    .history .history-list tr{
+        border-top: 1px solid #ccc;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .history .history-list tr:first-child{
+        border: none;
+    }
+
+    .history .history-list tr td{
+        padding: 15px;
+    }
+</style>
+<body>
+<header id="header">
+    <div class="left"><span class="app-name"></span>安装包下载</div>
+    <ul class="right">
+        <li>版本号：<span class="app-version"></span></li>
+        <li>时间：<span class="update-date"></span></li>
+    </ul>
+</header>
+<div id="container">
+    <img src="" class="logo">
+    <button id="J_install">点击安装</button>
+    <p class="text">或者用手机扫描二维码安装</p>
+    <div class="code" id="code">
+</div>
+<div class="instruction">
+        <h3>更新说明</h3>
+        <div class="update-instructions"></div>
+    </div>
+    <div class="history" style="display: none">
+        <h3>历史版本</h3>
+        <table class="history-list" >
+            
+        </table>
+    </div>
+
+
+<script src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script src="static/js/common.js"></script>
+
+<!-- 生成二维码    -->
+<script src="lib/utf.js"></script>
+<script src="lib/jquery.qrcode.js"></script>
+<script>
+
+    var versionList = [];
+    var downloadPageUrlSuffix = '';
+
+    $(function(){
+        ajax({
+            url: '/getApps',
+            data: {
+                downloadPageUrlSuffix: window.location.hash.slice(1),
+            },
+            success: function(response){
+                if(response.code === 1){
+                    versionList = response.data;
+                    versionSwitch(versionList, 0);
+                    if(versionList.length > 1){
+                        showTable(versionList);
+                    }    
+                }
+            }
+        })
+    })
+
+    function showTable(versionList){
+        $('.history').show();
+        var trs = '';
+        versionList.forEach(function(item, index){
+            trs += '<tr onclick="changeVersion(' + index + ')" >'+
+                        '<td  width="30%">' + 
+                            item.versionName + 
+                            '(' + item.versionCode + ')' +
+                        '</td> ' +
+                        '<td width="70%">' + 
+                            dateFormat(item.changeTime) +
+                            '<br/>' +
+                            item.updateInstructions +
+                        '</td> ' +
+                   '</tr>';
+        });
+        $('.history-list').html(trs);
+    }
+
+    function changeVersion(index){
+            versionSwitch(versionList, index);
+        }
+
+    function versionSwitch(versionList, index){
+         
+        var version = versionList[index];
+        downloadUrl = version.downloadFileUrl;
+        downloadPageUrlSuffix = version.downloadPageUrlSuffix;
+        $('.app-name').text(version.appName);
+        $('.app-version').text(version.versionCode);
+        $('.update-date').text(dateFormat(version.changeTime));
+        $('.logo').attr('src', version.logUrl);
+        $('.update-instructions').text(version.updateInstructions);
+
+        $('#code').html('')
+                  .qrcode({
+                    render: "canvas",
+                    width: '150',//宽度
+                    height: '150',
+                    text: window.location.href ,//二维码内容
+                    src: version.logUrl //logo图片
+                });
+    }
+
+    document.getElementById('J_install').onclick = function(){
+        
+
+        //判断
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+        if(isAndroid){
+            location.href = downloadUrl;
+        }else if(isiOS){
+            location.href = 'itms-services://?action=download-manifest&url=https:download.juphoon.com/app/' + downloadPageUrlSuffix + '/mainflist';
+        }else{
+            alert('请在手机上使用浏览器打开本页面，或者扫描下面的二维码，即可安装');
+        }
+    };
+
+</script>
+</body>
+</html>

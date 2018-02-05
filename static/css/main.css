@@ -1,0 +1,26 @@
+.ellipsis-td{
+	max-width: 150px; 
+	min-width: 20px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+tr:hover .ellipsis-td{
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+}
+.nodata{
+	display: none;
+	margin:50px auto;
+	width:500px;
+	height:300px;
+}
+.nodata img{
+	width:100%;
+	height:100%;	
+}
+
+#pagination{
+	margin-top: 20px;
+}
