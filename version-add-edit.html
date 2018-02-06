@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<title>新增安装包</title>
+</head>
+<body>
+	<article class="page-container">
+		<form action="" method="post" class="form form-horizontal" id="apk-form">
+	
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red"></span>应用名：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" disabled class="input-text disabled" value="" placeholder="" id="app-name" name="appName" >
+				</div>
+			</div>
+			<div class="row cl" >
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>VersionName：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="" placeholder="VersionName" id="version-name" name="versionName" >
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>VersionCode：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="" placeholder="VersionCode" id="version-code" name="versionCode" >
+				</div>
+			</div>
+
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>更新说明：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<textarea id="update-instructions" name="updateInstructions"  maxlength="140" class="textarea"  placeholder="请输入更新说明" style="height:65px"></textarea>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span></span>安装包文件：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="btn-upload form-group" style="width:100%">
+					  <input class="input-text upload-url radius" type="text" id="file-url-package" readonly  style="width:82%" ><a href="javascript:void();" class="btn btn-primary radius" style="width:18%" ><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+					  <input type="file" id="install-package" name="file" class="input-file">
+					</span>
+				</div>
+			</div>
+
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>APP Logo：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="btn-upload form-group" style="width:100%">
+					  <input class="input-text upload-url radius" type="text" id="file-url-logo" readonly  style="width:82%" ><a href="javascript:void();" class="btn btn-primary radius" style="width:18%" ><i class="Hui-iconfont">&#xe646;</i> 浏览文件</a>
+					  <input type="file" id="app-logo" name="file"  class="input-file">
+					</span>
+				</div>
+			</div>
+
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+					<input id="submit" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				</div>
+			</div>
+		</form>
+		
+	</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+
+<script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
+
+
+<script type="text/javascript" src="static/js/common.js"></script>
+
+
+
+<script type="text/javascript">
+	var appInfo = JSON.parse(sessionStorage.getItem('appInfo'));
+	var versionInfo = null;
+	var logoUrl = '';
+	var packageUrl = '',
+		packageSize = 0;
+	var submitInfo = {};
+
+	function upLoadFile(file, callBack){
+
+		var formData = new FormData();
+		formData.append('file', file);
+		var fileUrl = '';
+		var xhrOnpregress = function(fun){
+			xhrOnpregress.onprogress = fun;
+
+			return function(){
+				var xhr = $.ajaxSettings.xhr();
+				if(typeof xhrOnpregress !== 'function'){
+					return xhr;
+				}
+				if(xhrOnpregress.onprogress && xhr.upload){
+					xhr.upload.onprogress = xhrOnpregress.onprogress;
+				}
+				return xhr;
+			};
+		};
+
+		$(document).unbind('ajaxStart');
+		$(document).ajaxStart(function(){
+			
+		});
+
+		ajax({
+			url: 'http://123.125.97.186:8083/file/fastdfs/uploadFile',
+			type: 'post',
+			timeout: 10 * 60 * 1000,
+			data: formData,
+			cache: false,
+			processData: false,
+		    contentType: false,
+		    beforeSend: function(){
+		    	layer.closeAll();
+		    	layer.open({
+				  type: 1,
+				  title: false,
+				  closeBtn: 0,
+				  area: ['430px', '100px'],
+				  content:  '<div style="padding:15px;">' +
+				  				'<p id="progress-text" >文件上传中 0%</p>' +   
+				  				'<div class="progress">'+
+					  				'<div class="progress-bar-success" style="background-color: rgb(234,234,234);">' + 
+					  					'<span id="progress-bar" class="sr-only" style="width:0%"></span>'+
+				  					'</div>' + 
+			  					'</div>' +
+			  				'<div>'
+				});
+		    },
+		   	xhr: xhrOnpregress(function(e){
+		   		var percent = Math.ceil(e.loaded / e.total * 100);
+		   		$('#progress-bar').css('width', percent + '%');
+		   		$('#progress-text').text('文件上传中 ' + percent + '%');
+		   		if(percent === 100){
+			   		setTimeout(function(){
+			   			layer.closeAll();
+			   		}, 1000);
+		   		}
+
+		   	}),
+		    success: function(response){
+		    	if(response.code === -100){
+		    		layer.msg('文件上传失败');
+		    	}
+		    	callBack && callBack(response);
+		    }
+		});
+
+		return fileUrl;
+	}
+	
+	$(function(){
+
+		if(appInfo){
+			$('#app-name').val(appInfo.appName);
+		}
+
+		if(GetUrlHash() === 'edit'){
+			ajax({
+				url: '/getVersionDetail',
+				data: {
+					id: sessionStorage.getItem('versionId')
+				},
+				success: function(response){
+					if(response.code === 1){
+						versionInfo = response.data;
+						$('#version-name').val(versionInfo.versionName);
+						$('#version-code').val(versionInfo.versionCode);
+						$('#download-page-url').val(versionInfo.downloadPageUrl);
+						$('#update-instructions').val(versionInfo.updateInstructions);
+						$('#file-url-package').val(versionInfo.downloadFileUrl);
+						$('#file-url-logo').val(versionInfo.logUrl);
+
+						packageUrl = versionInfo.downloadFileUrl;
+						packageSize = versionInfo.fileSize;
+						logoUrl = versionInfo.logUrl;
+					}
+				}
+			});
+		}
+
+		$('.skin-minimal .radio').iCheck({
+			// radioClass: 'iradio-green',
+			increaseArea: '20%',
+		});
+	});
+
+	$('#app-logo').change(function(){
+		var that = this;
+		var file = that.files[0];
+		upLoadFile(file, function(response){
+			$('#app-logo').val('');
+			logoUrl = response.value;
+		});
+	});
+
+	$('#install-package').change(function(){
+		var that = this;
+		var file = that.files[0];
+		packageSize = file.size;
+		packageUrl = upLoadFile(file, function(response){
+			packageUrl = response.value;
+			$(that).val('');
+		});
+	});
+
+	$('#submit').click(function(event){
+		event.preventDefault();
+		submitInfo = {
+			appId: appInfo.id,
+		    versionName: $('#version-name').val(),
+		    versionCode: $('#version-code').val(),
+		    updateInstructions: $('#update-instructions').val(),
+		   	downloadFileUrl: packageUrl,
+		   	fileSize: packageSize.toString(),
+		   	logUrl: logoUrl
+		};   	
+
+		if(submitInfo.versionName === ''){
+            layer.msg('请输入VersionName');
+        }else if(submitInfo.versionCode === ''){
+			layer.msg('请输入VersionCode');
+		}else if(!/^\d+(\.\d+)*$/.test(submitInfo.versionCode)){
+			if(/\.$/.test(submitInfo.versionCode)){
+				layer.msg('VersionCode小数点不能放在最后');
+			}else if(/[\.]+/.test(submitInfo.versionCode)){
+				layer.msg('VersionCode不能包含连续小数点');
+			}else{
+				layer.msg('VersionCode只能包含数字和小数点');
+			}
+			$('#version-code').focus();
+		}else if(submitInfo.updateInstructions === ''){
+			layer.msg('请输入更新说明');
+		}else if(!submitInfo.downloadFileUrl && !versionInfo){
+			layer.msg('请上传安装包文件');
+		}else if(!submitInfo.logUrl && !versionInfo){
+			layer.msg('请上传App Logo');
+		}else{
+			var destination = '添加';
+			var url = '/addVersion';
+
+			if(versionInfo){
+				destination = '修改';
+				url = '/updateAppVersion';
+				submitInfo.id = versionInfo.id;
+			}
+			
+			ajax({
+				url: url,
+				type: 'post',
+				timeout: 10*1000,
+				data: submitInfo,
+				success: function(response){
+					var status = response.code;
+					if(status === 1){
+						layer.msg(destination + '成功');
+						setTimeout(function(){
+							parent.location.reload();
+						}, 1000);
+					}else if(status === 0){
+							layer.open({
+								type: 0,
+								closeBtn: 0,
+								icon:7, 
+								title: destination + '失败',
+								content: response.error
+							});
+
+						}
+				}
+			});
+		}
+	});
+	
+</script> 
+</body>
+</html>

@@ -28,13 +28,13 @@
 	<div class="navbar navbar-fixed-top">
 		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="/aboutHui.shtml">App管理</a> 
 		<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
-			<!-- <ul class="cl">
+			<ul class="cl">
 				<li class="dropDown dropDown_hover">
 					<a href="#" class="dropDown_A" > <span id="username"></span><i class="Hui-iconfont">&#xe6d5;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
 						<li><a id="logout" href="javascript: void(0);">退出</a></li>
 					</ul>
-			</ul> -->
+			</ul>
 		</nav>
 	</div>
 </div>
@@ -45,7 +45,7 @@
 			<dt class="selected" ><i class="Hui-iconfont">&#xe654;</i> 安装包管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd style="display: block;">
 				<ul>
-					<li><a data-href="installation-package.html" data-title="安装包管理" href="javascript:void(0)">安装包管理</a></li>
+					<li><a data-href="app-list.html" data-title="安装包管理" href="javascript:void(0)">安装包管理</a></li>
 				</ul>
 			</dd>
 		</dl>
@@ -57,7 +57,7 @@
 		<div class="Hui-tabNav-wp">
 			<ul id="min_title_list" class="acrossTab cl">
 				<li class="active">
-					<span title="安装包管理" data-href="installation-package.html">安装包管理</span>
+					<span title="安装包管理" data-href="app-list.html">安装包管理</span>
 					<em></em></li>
 		</ul>
 	</div>
@@ -66,7 +66,7 @@
 	<div id="iframe_box" class="Hui-article">
 		<div class="show_iframe">
 			<div style="display:none" class="loading"></div>
-			<iframe scrolling="yes" frameborder="0" src="installation-package.html"></iframe>
+			<iframe scrolling="yes" frameborder="0" src="app-list.html"></iframe>
 	</div>
 </div>
 </section>
@@ -87,16 +87,14 @@
 
 	$(function(){
 		$('#username').text($.cookie('username'));
-	})
+	});
 
 	$('#logout').click(function(){
 		ajax({
-			url: 'logout',
+			url: '/logout',
 			type: 'post',
 			success: function(res){
 				if(res.code === 1){
-					$.removeCookie('domainId');
-					$.removeCookie('domainName');
 					$.removeCookie('uuid');
 					window.open('login.html', '_self');
 				}

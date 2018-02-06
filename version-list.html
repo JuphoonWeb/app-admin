@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+<link rel="stylesheet" type="text/css" href="static/css/main.css">
+<title>历史版本</title>
+</head>
+<body >
+
+<div class="page-container" id="student-list">
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
+		<p class="l" >应用名：<span id="app-name" ><span></p>
+		<span class="r">共有数据：<strong id="data-num">0</strong> 条</span> 
+	</div>
+	<div class="mt-20">
+	<table class="table table-bordered table-border table-hover table-bg ">
+		<thead>
+			<tr class="text-c">
+				<th >序号</th>
+				<th >versionName</th>
+				<th >versionCode</th>
+				<th>创建日期</th>
+				<th>修改日期</th>
+				<th >安装包下载地址</th>
+				<th >操作</th>
+			</tr>
+		</thead>
+		<tbody id="install-package-tbody" class="text-c" >	
+		</tbody>
+	</table>
+	<div class="pagination r" id="pagination"></div>
+	<div class="nodata" id="nodata">
+		<img src="static/images/nodata.svg" alt="">
+	</div>
+</div>
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+<script type="text/javascript"  src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="static/js/common.js"></script> 
+
+
+<script type="text/javascript">
+	var appInfo = JSON.parse(sessionStorage.getItem('appInfo'));
+	var isPageInit = false;
+	var searchPara = {
+		page: 1,
+		size: 10,
+		appId: appInfo.id
+	};
+	// var versionList = [];
+
+	$(function(){
+		getData(searchPara);
+		$('#app-name').text(appInfo.appName);		
+	});
+
+
+	function getData(searchPara){
+
+		ajax({
+			url: '/getVersionList',
+			data: searchPara,
+			success: function(response){
+				var status = response.code;
+				if(status === 1){
+					// versionList = response.data.list;
+					renderTable(response.data);
+				}else if(status === 0){
+					layer.open({
+						type: 0,
+						closeBtn: 0,
+						icon:7, 
+						title: '获取数据失败',
+						content: response.error
+					});
+
+				}
+			}
+		});
+	}
+
+	function renderTable(data){
+		var list = data.list;
+		if(list.length == 0){
+			$('#nodata').show();
+		}else{
+			$('#nodata').hide();
+		}
+		var trs = '';
+		for(var i = 0; i<list.length; i++){
+			var sequence = (searchPara.page-1)*searchPara.size+i+1;
+			var createTime = dateFormat(list[i].createTime);
+			var changeTime = dateFormat(list[i].changeTime);
+		    trs += '<tr>'+
+		    			'<td>'+ sequence + '</td>'+ 
+		    			'<td>'+ list[i].versionName + '</td>'+ 
+		    			'<td>'+ list[i].versionCode + '</td>'+ 
+		    			'<td>' + createTime + '</td>'+ 
+		    			'<td>' + changeTime + '</td>'+ 
+		    			'<td> <a download href=" '+ list[i].downloadFileUrl +' ">详情</a></td>'+
+		    			'<td>'+
+							'<button onclick="editVersion('+ list[i].id +')" class="btn btn-secondary-outline radius">编辑'+
+							'</button>'+
+							// '<button  onclick="deleteInstallPackage('+i+')" style="margin-left:15px" class="btn btn-danger-outline radius">删除'+
+							// '</button>'+
+						'</td>'+
+				    '</tr>' ;
+		}
+		$('#install-package-tbody').html(trs);
+		$('#data-num').text(data.total);
+		if(!isPageInit && data.total > searchPara.size){
+			$('#pagination').show();
+			var pages = Math.ceil(data.total/searchPara.size);
+			laypage({
+			    cont: 'pagination',
+			    curr: 1, 
+			    pages: pages,
+			    groups: 5,
+			    jump: function(obj,first) {
+			    	if(!first){
+			    		searchPara.page =obj.curr;
+				    	getData(searchPara);
+					}
+			    }
+		  });
+		
+		}
+		isPageInit = true;
+	}
+
+	function editVersion(id){
+		// sessionStorage.setItem('versionInfo', JSON.stringify(versionList[index]));
+		sessionStorage.setItem('versionId', id);
+		layer_show('编辑版本','version-add-edit.html#edit','','500');
+	}
+</script>  
+</body>
+</html>

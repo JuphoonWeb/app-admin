@@ -138,7 +138,7 @@
 </style>
 <body>
 <header id="header">
-    <div class="left"><span class="app-name"></span>安装包下载</div>
+    <div class="left"><span class="app-name"></span> | 安装包下载</div>
     <ul class="right">
         <li>版本号：<span class="app-version"></span></li>
         <li>时间：<span class="update-date"></span></li>
@@ -146,9 +146,14 @@
 </header>
 <div id="container">
     <img src="" class="logo">
+    <div class="name-tab">
+        <em>适用于<span id="app-type"></span>设备</em>
+    </div>
     <button id="J_install">点击安装</button>
-    <p class="text">或者用手机扫描二维码安装</p>
-    <div class="code" id="code">
+    <div class="code-container">
+        <p class="text">或者用手机扫描二维码安装</p>
+        <div class="code" id="code">
+    </div>
 </div>
 <div class="instruction">
         <h3>更新说明</h3>
@@ -172,12 +177,18 @@
 
     var versionList = [];
     var downloadPageUrlSuffix = '';
+    var appType = 'Android';
 
     $(function(){
+        getVersionList();
+    });
+
+    function getVersionList(versionCode){
         ajax({
             url: '/getApps',
             data: {
-                downloadPageUrlSuffix: window.location.hash.slice(1),
+                suffix : window.location.hash.slice(1),
+                versionCode: versionCode || ''
             },
             success: function(response){
                 if(response.code === 1){
@@ -188,14 +199,17 @@
                     }    
                 }
             }
-        })
-    })
+        });
+    }
 
     function showTable(versionList){
         $('.history').show();
         var trs = '';
-        versionList.forEach(function(item, index){
-            trs += '<tr onclick="changeVersion(' + index + ')" >'+
+        
+        for(var i = 1; i < versionList.length; i++){
+
+            var item = versionList[i];
+            trs += '<tr onclick="changeVersion(' + i + ')" >'+
                         '<td  width="30%">' + 
                             item.versionName + 
                             '(' + item.versionCode + ')' +
@@ -206,17 +220,30 @@
                             item.updateInstructions +
                         '</td> ' +
                    '</tr>';
-        });
+        }
+        
         $('.history-list').html(trs);
     }
 
     function changeVersion(index){
-            versionSwitch(versionList, index);
-        }
+        // versionSwitch(versionList, index);
+        getVersionList(versionList[index].versionCode);
+    }
 
     function versionSwitch(versionList, index){
          
         var version = versionList[index];
+        if(version.appType === 0){
+            appType = 'Android';
+            $('.code-container').show();
+        }else if(version.appType === 1){
+            appType = 'iOS';
+            $('.code-container').show();
+        }else if(version.appType === 2){
+            appType = 'Windows';
+            $('.code-container').hide();
+        }
+        $('#app-type').text(appType);
         downloadUrl = version.downloadFileUrl;
         downloadPageUrlSuffix = version.downloadPageUrlSuffix;
         $('.app-name').text(version.appName);
@@ -247,6 +274,8 @@
             location.href = downloadUrl;
         }else if(isiOS){
             location.href = 'itms-services://?action=download-manifest&url=https:download.juphoon.com/app/' + downloadPageUrlSuffix + '/mainflist';
+        }else if(appType === 'Windows'){
+            location.href = downloadUrl;
         }else{
             alert('请在手机上使用浏览器打开本页面，或者扫描下面的二维码，即可安装');
         }

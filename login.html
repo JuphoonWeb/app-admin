@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>App管理</title>
+	<link rel="stylesheet" href="static/h-ui/css/H-ui.css">
+	<link href='http://cdn.webfont.youziku.com/webfonts/nomal/105831/46724/5a0a8967f629d80d3829bba9.css' rel='stylesheet' type='text/css' />
+	<style>
+		.title{
+			position:absolute;
+			top:150px;
+			left:50%;
+			transform: translateX(-50%);
+			width:500px;
+			/*font-family:'TSSunOlde5e52050619d67';*/
+			z-index: 1000;
+			cursor: default;
+		}
+		.title .title-1{
+			margin:0 50px -15px;
+			padding:0;
+			font-size:22px;
+			color:rgb(66, 176, 244)
+		}
+		.title .title-2{
+			font-size: 50px;
+		}
+		form{
+			position: absolute;
+			top:400px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 400px;
+			height:250px;
+			z-index:1000;
+		}
+		.legend-text{
+			width:30%;
+			border-bottom: 3px rgb(66, 176, 244) solid;
+			color:rgb(66, 176, 244);
+			cursor:default;
+			text-align: center; 
+		}
+		#form-popup{
+			text-align: center;
+		}
+		button.btn.size-L{
+			margin-top: 20px;
+			border-radius: 30px;
+			background-color: rgb(66, 176, 244)
+		}
+		.remember-password-box{
+			margin-top: -10px;
+		}
+	</style>
+	<!-- 背景动画 -->
+	<style>
+		.background{
+			position: relative;
+			height:900px;
+			z-index:1;
+			display: none\0;
+		}
+		.box{
+			position:absolute;
+			width:300px;
+			height:200px;
+			perspective-origin:center;	
+			perspective: 500px;
+			transform-style:preserve-3d;
+		}
+		
+		.box-1{
+			top:650px;
+			left:200px;
+		}
+		.box-2{
+			top:350px;
+			left:0px;
+			transform: scale3d(1.5,1.5,1.5);
+		}
+		.box-3{
+			top:0px;
+			left:150px;
+			animation-duration: 8s;
+		}
+		.box-4{
+			top:50px;
+			left:600px;
+			transform: rotateZ(60deg);
+			transform: scale3d(1.5,1.5,1.5);	
+		}
+		.box-5{
+			top:300px;
+			left:1500px;
+			animation-duration: 5s;
+		}
+		.box-6{
+			top:150px;
+			left:1000px;
+			transform: rotateZ(45deg);
+		}
+		.box-7{
+			top:10px;
+			left:1300px;
+			transform: scale3d(1.5,1.5,1.5);
+		}
+		.box-8{
+			top:500px;
+			left:1200px;
+		}
+		
+		.box-9{
+			top:600px;
+			left:700px;
+			transform: scale3d(1.5,1.5,1.5);
+			animation-duration: 10s;
+		}
+		.box-10{
+			top:400px;
+			left:450px;
+		}
+		.box-11{
+			top:700px;
+			left:1500px;
+		}
+		.cube{
+			position: relative;
+			width:100px;height:100px;
+			margin: 50px auto;
+			transform-style:preserve-3d;
+			animation: cube-dance 6s linear infinite both;
+						
+		}
+		.box:nth-child(even) .cube{
+			/*animation-direction: reverse;*/
+			animation-duration: 10s;
+		}
+		@keyframes cube-dance{
+			0%{
+				transform: rotate3d(100,100,100,0);
+			}
+			50%{
+				transform: rotate3d(100,100,100,180deg);
+			}
+			100%{
+				transform: rotate3d(100,100,100,360deg);
+			}
+		}
+		.side{
+			position: absolute;
+			width:100px;
+			height:100px;
+			border:1px solid rgb(207,207,207);
+			background-color: rgba(234,234,234,.1)
+		}
+		.side:hover{
+			background-color: rgb(234,234,234); 
+			/*background-color: rgba(66, 176, 244,.2)*/
+		}
+		.side-1{
+
+		}
+		.side-2{
+			transform-origin: bottom;
+			transform: rotateX(-90deg);
+		}
+		.side-3{
+			transform-origin: right;
+			transform: rotateY(90deg);
+		}
+		.side-4{
+			transform-origin: left;
+			transform: rotateY(-90deg);	
+		}
+		.side-5{
+			transform-origin: top;
+			transform: rotateX(90deg);	
+		}
+		.side-6{
+			transform: translateZ(100px);
+		}
+	</style>
+</head>
+<body>
+	<div class="background">
+		<div class="box box-1">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-2">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-3">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-4">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-5">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-6">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-7">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-8">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-9">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-10">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+		<div class="box box-11">
+			<div class="cube">	
+				<div class="side side-1"></div>
+				<div class="side side-2"></div>
+				<div class="side side-3"></div>
+				<div class="side side-4"></div>
+				<div class="side side-5"></div>
+				<div class="side side-6"></div>
+			</div>
+		</div>
+	</div>
+	<div class="title text-c">
+		<p class="title-1 text-l" ></p>
+		<p class="title-2">App后台管理</p>
+	</div>
+	<form action="" class="form form-horizontal text-c"  novalidate>
+		<legend><div class="legend-text">登录</div></legend>	
+		<div class="row cl">
+			<label for="" class="form-label col-md-3 col-sm-3">用户名</label>
+			<div class="formControls col-md-9 col-sm-9">
+				<input type="text" class="input-text radius size-L" id="username" required  nullmsg="请输入用户名">
+			</div>
+		</div>
+		<div class="row cl">
+			<label for="" class="form-label col-xs-4 col-sm-3" >密码</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="password" class="input-text radius size-L" id="password" required >
+			</div>
+		</div>
+		<button id="login-btn" class="btn btn-primary radius btn-block size-L">登录 </button>
+	<!-- 	<div class="row cl" >
+			<div class="remember-password-box col-md-4">
+				<input type="checkbox" id="remember-checkbox"><label for="remember-checkbox">记住我</label>
+			</div>
+		</div> -->
+	</form>
+</body>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="static/js/common.js"></script>
+
+
+<script>
+
+	// function setCookie(item, value, expires){
+	// 	var expires = expires || 30;
+	// 	$.cookie(item, value, {expires: expires, path: '/admin'});
+	// }
+
+	// $(function() {
+	// 	var remFlag = parseInt($.cookie('rem-flag')) || false;
+	// 	$('#remember-checkbox').prop('checked', remFlag);
+	// 	$('#username').val($.cookie('username'));
+	// 	$('#password').val($.cookie('psw'));
+	// });
+
+	// $('#remember-checkbox').change(function(){
+	// 	var remFlag = $(this).prop('checked');
+	// 	console.log(remFlag);
+	// 	setCookie('rem-flag', Number(remFlag));
+	// 	if(remFlag){
+	// 		setCookie('username', $('#username').val());
+	// 		setCookie('psw', $('#password').val());
+	// 	}
+	// 	else{
+	// 		$.removeCookie('username');
+	// 		$.removeCookie('psw');
+	// 	}
+	// });
+
+ 	$('#login-btn').click(function(event){
+ 		event.preventDefault();
+	 	var	username = $('#username').val();
+ 		var password = $('#password').val();
+ 		if(username === ''){
+ 			layer.msg('请输入用户名');
+ 			$('#username').focus();
+ 		}else if(password === ''){
+ 			layer.msg('请输入密码');
+ 			$('#password').focus();
+ 		}else{
+ 			// if(parseInt($.cookie('rem-flag'))){
+ 			// 	setCookie('username', username);
+ 			// 	setCookie('psw', password);
+ 			// }
+
+ 			ajax({
+ 				url: '/login',
+ 				type: 'post',
+ 				timeout: 10*1000,
+ 				data: {
+	 				username: username,
+	 				password: password,
+	 			},
+ 				success: function(response) {
+		 			if(response.code === 1){
+		 				var data = response.data;
+		 				$.cookie('uuid', data.uuid);
+		 				$.cookie('username', username);
+		 				window.open('index.html','_self');
+
+		 			}else if(response.code === 0){
+		 				layer.closeAll();
+		 				var errorMsg = response.error;
+		 				layer.msg(errorMsg);
+		 				$('#password').val('');
+		 				if(errorMsg === '密码错误'){
+		 					$('#password').focus();
+		 				}else{
+		 					$('#username').focus();
+		 				}
+		 			}else if(response.code === -1){
+		 				layer.msg('error');
+		 			}
+		 		}
+ 			});
+ 		}
+ 	});
+</script>
+</html>

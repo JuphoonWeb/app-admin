@@ -5,16 +5,17 @@ document.write(
 '<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>'
 );
 
-var domain = 'https://download.juphoon.com/app';
+// var domain = 'https://download.juphoon.com/app';
+var domain = 'http://192.168.0.46:8083/app';
 
 function ajax(option){
 	$(document).unbind('ajaxStart');
     $(document).ajaxStart(function(){
 		layer.load(1);
 	});
-	var domain = (/^http:[\/]{2}/).test(option.url ) ? 
-					'' :'https://download.juphoon.com/app'
-	var url = domain + option.url;
+	var ajaxDomain = (/^http:[\/]{2}/).test(option.url ) ? 
+					'' : domain;
+	var url = ajaxDomain + option.url;
 	var menuUrl = window.location.href.split('?')[0].replace('#','').split('/').reverse()[0];
 
 	if(menuUrl){
@@ -31,14 +32,14 @@ function ajax(option){
 	    contentType: option.contentType,
 		headers: {
 			token: $.cookie('uuid'),
-			'Menu-Url': menuUrl 
+			// 'Menu-Url': menuUrl 
 		},
 		dataType : 'json',
 		data: option.data,
 		timeout: option.timeout || 5*1000,
 		xhr: option.xhr,
 		beforeSend: function(xhr, settings){
-	    	option.beforeSend && option.beforeSend(xhr, settings);	
+	    	option.beforeSend && option.beforeSend(xhr, settings);
 	    },
 		success: function(res){
 	    	layer.closeAll();
@@ -49,7 +50,7 @@ function ajax(option){
 					title: '提示',
 					icon: 7,
 					content: '您没有权限'
-	    		})
+	    		});
 	    	}else if(res.code === -1){
 	    		relogin();
 	    	}else if(res.code === 0){
@@ -62,7 +63,7 @@ function ajax(option){
 	    	layer.closeAll();
 	    	option.error ? option.error(xhr, status) : errorFunc(xhr, status);
 	    }, 
-	})
+	});
 }
 
 // Date对象格式化
@@ -86,7 +87,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
             }
 	    }
         return fmt;
-}
+};
 
 //将时间戳转换为'yyyy-MM-dd hh:mm:ss'形式
 function timeFormat(time){
@@ -107,13 +108,13 @@ function getTime10(timeStr){
 }
 
 Array.prototype.remove = function(val){
-	var index = this.indexOf(val)
+	var index = this.indexOf(val);
 	if(index > -1){
 		this.splice(index, 1);
 		return val;
 	}
 	return null;
-}
+};
 
 function removeRepeat(array){
 	var resultArray = [];
@@ -138,7 +139,7 @@ function relogin(){
 		yes: function() {
 			top.open('login.html', '_self');
 		}
-	})
+	});
 }
 
 //查询到没有数据时显示“暂无数据”的图片
@@ -161,7 +162,7 @@ function errorFunc(xhr, status){
 		icon:7, 
 		title: '出现错误',
 		content: status
-	})
+	});
 }
 
 //获取应用列表,参数leadOption为true则添加value为空的option
@@ -195,24 +196,29 @@ function GetQueryString(name){
      if(r!=null)return  decodeURIComponent(r[2]); return null;
 }
 
+//取得页面地址Hash
+function GetUrlHash(){
+	return location.hash.slice(1);
+}
+
  // durationType值定义： 1: 最近一个月 2：最近半年 3：自定义  
 function setDuration(durationType){
 if(durationType != 3){
-    var nowTime = new Date()
-    var endTime = nowTime.Format('yyyy-MM-dd')
-    var startTime = new Date()
+    var nowTime = new Date();
+    var endTime = nowTime.Format('yyyy-MM-dd');
+    var startTime = new Date();
     if(durationType == 1){
-        startTime.setMonth(nowTime.getMonth()-1)
+        startTime.setMonth(nowTime.getMonth()-1);
     }else if(durationType == 2){
-        startTime.setMonth(nowTime.getMonth()-6)
+        startTime.setMonth(nowTime.getMonth()-6);
     }
     
-    startTime = startTime.Format('yyyy-MM-dd')
+    startTime = startTime.Format('yyyy-MM-dd');
 
-    searchPara.startTime = getTime10(startTime)
-    searchPara.endTime = getTime10(nowTime.Format('yyyy-MM-dd'))
-    $('#search-start-date').val(startTime)
-    $('#search-end-date').val(endTime) 
+    searchPara.startTime = getTime10(startTime);
+    searchPara.endTime = getTime10(nowTime.Format('yyyy-MM-dd'));
+    $('#search-start-date').val(startTime);
+    $('#search-end-date').val(endTime); 
 }
 }
 

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<title>新增安装包</title>
+</head>
+<body>
+	<article class="page-container">
+		<form action="" method="post" class="form form-horizontal" id="apk-form">
+	
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>应用名：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="" placeholder="请输入应用名" id="app-name" name="appName" >
+				</div>
+			</div>
+			<div class="row cl ">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>应用类型：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input type="radio" class="radio app-type" name="app-type" id="app-type-0" value="0"><label for="app-type-1">Android</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" class="radio app-type" name="app-type" id="app-type-1" value="1" ><label for="app-type-2">iOS</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" class="radio app-type" name="app-type" id="app-type-2" value="2" ><label for="app-type-3">Windows</label>
+					</div>
+				</div>
+			</div>
+			<div class="row cl" >
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>包名：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="" placeholder="包名" id="app-id" name="appId" >
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>是否强制升级：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input type="radio" class="radio mandatoryUpdate" name="mandatoryUpdate" id="mandatory-update-1" value="1"><label for="mandatory-update-yes">是</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" class="radio mandatoryUpdate" name="mandatoryUpdate" id="mandatory-update-2" value="0" ><label for="mandatory-update-no">否</label>
+					</div>
+				</div>
+			</div>
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+					<input id="submit" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				</div>
+			</div>
+		</form>
+		
+	</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+
+<script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
+
+
+<script type="text/javascript" src="static/js/common.js"></script>
+
+
+
+<script type="text/javascript">
+	// var editInfo = JSON.parse(sessionStorage.getItem('editApkInfo'));
+	
+	$(function(){
+		
+		
+		// if(editInfo){
+		// 	console.log(editInfo);
+		// 	$('#app-name').val(editInfo.appName);
+		// 	$('.radio.app-type#app-type-'+editInfo.appType).prop('checked', true);
+		// 	$('#app-id').val(editInfo.appId);
+		// 	$('.radio.mandatoryUpdate').eq(1-editInfo.mandatoryUpdate).prop('checked', true);
+		// }else{
+			$('.radio.app-type').eq(0).prop('checked', true);
+			$('.radio.mandatoryUpdate').eq(0).prop('checked', true);
+		// }
+
+		$('.skin-minimal .radio').iCheck({
+			// radioClass: 'iradio-green',
+			increaseArea: '20%',
+		});
+	});
+
+	$('#submit').click(function(event){
+		event.preventDefault();
+		apkInfo = {
+		    appName: $('#app-name').val(),
+		    appType: $('.radio.app-type:checked').val(),
+			appId: $('#app-id').val(),
+		   	mandatoryUpdate: $('.radio.mandatoryUpdate:checked').val(),
+		};   	
+
+		if(apkInfo.appName === ''){
+			layer.msg('请输入应用名');
+		}else if(apkInfo.appId === ''){
+            layer.msg('请输入包名');
+        }else{
+			var destination = '添加';
+			var url = '/addApp';
+
+			// if(editInfo){
+			// 	destination = '修改';
+			// 	url = '/updateApp';
+			// 	apkInfo.id = editInfo.id;
+			// }
+			
+			ajax({
+				url: url,
+				type: 'post',
+				timeout: 10*1000,
+				data: apkInfo,
+				success: function(response){
+					var status = response.code;
+					if(status === 1){
+						layer.msg(destination + '成功');
+						setTimeout(function(){
+							parent.location.reload();
+						}, 1000);
+					}else if(status === 0){
+							layer.open({
+								type: 0,
+								closeBtn: 0,
+								icon:7, 
+								title: destination + '失败',
+								content: response.error
+							});
+
+						}
+				}
+				
+			});
+		}
+	});
+	
+</script> 
+</body>
+</html>
