@@ -117,8 +117,8 @@
 		    			'<td>'+
 							'<button onclick="editVersion('+ list[i].id +')" class="btn btn-secondary-outline radius">编辑'+
 							'</button>'+
-							// '<button  onclick="deleteInstallPackage('+i+')" style="margin-left:15px" class="btn btn-danger-outline radius">删除'+
-							// '</button>'+
+							'<button  onclick="deleteVersion(\'' + list[i].versionName +'\','+ list[i].id + ')" style="margin-left:15px" class="btn btn-danger-outline radius">删除'+
+							'</button>'+
 						'</td>'+
 				    '</tr>' ;
 		}
@@ -148,6 +148,44 @@
 		// sessionStorage.setItem('versionInfo', JSON.stringify(versionList[index]));
 		sessionStorage.setItem('versionId', id);
 		layer_show('编辑版本','version-add-edit.html#edit','','500');
+	}
+
+	function deleteVersion(name, id){
+
+		layer.confirm('确定删除版本 ['+ name +'] 吗？',{
+			title: '提示',
+			icon:3,
+			closeBtn: 0,
+			yes: function(){
+				ajax({
+					url: '/delVersion',
+					type: 'post',
+					data: {
+						 id: id
+					},
+					success: function(response){
+						var status = response.code;
+						if(status === 1){
+							layer.msg('已删除');
+							setTimeout(function(){
+								window.location.reload();
+							},1000);
+						}else if(status === 0){
+							layer.open({
+								type: 0,
+								closeBtn: 0,
+								icon:7, 
+								title: '删除失败',
+								content: response.error
+							});
+						}
+					},
+					error: function(xhr, status){
+						layer.msg(status);
+					}
+				});
+			}
+		});
 	}
 </script>  
 </body>

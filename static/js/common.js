@@ -7,6 +7,7 @@ document.write(
 
 // var domain = 'https://download.juphoon.com/app';
 var domain = 'http://192.168.0.46:8083/app';
+// var domain = 'http://192.168.20.38:8083/app';
 
 function ajax(option){
 	$(document).unbind('ajaxStart');
