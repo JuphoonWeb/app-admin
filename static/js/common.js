@@ -5,8 +5,8 @@ document.write(
 '<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>'
 );
 
-// var domain = 'https://download.juphoon.com/app';
-var domain = 'http://192.168.0.46:8083/app';
+var domain = 'https://download.juphoon.com/app';
+// var domain = 'http://192.168.0.46:8083/app';
 // var domain = 'http://192.168.20.38:8083/app';
 
 function ajax(option){
