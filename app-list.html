@@ -36,7 +36,7 @@
 				<th >应用名</th>
 				<th >应用类型</th>
 				<th>包名</th>
-				<th >是否强制升级</th>
+				<!-- <th >是否强制升级</th> -->
 				<th>下载页面地址</th>
 				<th >操作</th>
 			</tr>
@@ -121,9 +121,9 @@
 			}else if(list[i].appType === 2){
 				appType = '<span class="label label-success radius">Windows</span>';
 			} 
-			var mandatoryUpdate = list[i].mandatoryUpdate ? 
-					'<span class="label label-success radius">是</span>':
-					'<span class="label label-secondary radius">否</span>';
+			// var mandatoryUpdate = list[i].mandatoryUpdate ? 
+					// '<span class="label label-success radius">是</span>':
+					// '<span class="label label-secondary radius">否</span>';
 
 		 
 		    trs += '<tr>'+
@@ -131,7 +131,7 @@
 		    			'<td>'+list[i].appName+'</td>'+
 		    			'<td>'+appType+'</td>'+
 		    			'<td>'+(list[i].appId||'')+'</td>'+
-		    			'<td>'+mandatoryUpdate+'</td>'+
+		    			// '<td>'+mandatoryUpdate+'</td>'+
 		    			'<td class="ellipsis-td" > <a target="_blank" href="'+list[i].downloadPageUrl+'">'+list[i].downloadPageUrl+'</a></td>'+
 		    			'<td>'+
 		    				'<button onclick="addVersion('+i+')" style="margin-left:15px"  class="btn btn-secondary-outline radius">新增版本'+
@@ -167,7 +167,7 @@
 
 	//	新增App
 	function addApp(){
-		layer_show('新增App','app-add-edit.html','','400');
+		layer_show('新增App','app-add-edit.html','','300');
 	}
 
 	//	新增版本

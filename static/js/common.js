@@ -223,6 +223,71 @@ if(durationType != 3){
 }
 }
 
+//上传文件
+function upLoadFile(file, callBack){
+
+		var formData = new FormData();
+		formData.append('file', file);
+		var xhrOnpregress = function(fun){
+			xhrOnpregress.onprogress = fun;
+
+			return function(){
+				var xhr = $.ajaxSettings.xhr();
+				if(typeof xhrOnpregress !== 'function'){
+					return xhr;
+				}
+				if(xhrOnpregress.onprogress && xhr.upload){
+					xhr.upload.onprogress = xhrOnpregress.onprogress;
+				}
+				return xhr;
+			};
+		};
+		ajax({
+			url: 'http://123.125.97.186:8083/file/fastdfs/uploadFile',
+			type: 'post',
+			timeout: 10 * 60 * 1000,
+			data: formData,
+			cache: false,
+			processData: false,
+		    contentType: false,
+		    beforeSend: function(){
+		    	layer.closeAll();
+		    	layer.open({
+				  type: 1,
+				  title: false,
+				  closeBtn: 0,
+				  area: ['430px', '100px'],
+				  content:  '<div style="padding:15px;">' +
+				  				'<p id="progress-text" >文件上传中 0%</p>' +   
+				  				'<div class="progress">'+
+					  				'<div class="progress-bar-success" style="background-color: rgb(234,234,234);">' + 
+					  					'<span id="progress-bar" class="sr-only" style="width:0%"></span>'+
+				  					'</div>' + 
+			  					'</div>' +
+			  				'<div>'
+				});
+		    },
+		   	xhr: xhrOnpregress(function(e){
+		   		var percent = Math.ceil(e.loaded / e.total * 100);
+		   		$('#progress-bar').css('width', percent + '%');
+		   		$('#progress-text').text('文件上传中 ' + percent + '%');
+		   		if(percent === 100){
+			   		setTimeout(function(){
+			   			layer.closeAll();
+			   		}, 1000);
+		   		}
+
+		   	}),
+		    success: function(response){
+		    	if(response.code === -100){
+		    		layer.msg('文件上传失败');
+		    	}
+		    	callBack && callBack(response);
+		    }
+		});
+
+}
+
 $('input').on('input', function(){
 	var val = $(this).val();
 	var jsReg = /.*(<script>).*(<\/script>)*.*/i;

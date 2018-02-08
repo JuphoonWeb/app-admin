@@ -35,13 +35,13 @@
 				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>应用类型：</label>
 				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
 					<div class="radio-box">
-						<input type="radio" class="radio app-type" name="app-type" id="app-type-0" value="0"><label for="app-type-1">Android</label>
+						<input type="radio" class="radio app-type" name="app-type" id="app-type-0" value="0"><label for="app-type-0">Android</label>
 					</div>
 					<div class="radio-box">
-						<input type="radio" class="radio app-type" name="app-type" id="app-type-1" value="1" ><label for="app-type-2">iOS</label>
+						<input type="radio" class="radio app-type" name="app-type" id="app-type-1" value="1" ><label for="app-type-1">iOS</label>
 					</div>
 					<div class="radio-box">
-						<input type="radio" class="radio app-type" name="app-type" id="app-type-2" value="2" ><label for="app-type-3">Windows</label>
+						<input type="radio" class="radio app-type" name="app-type" id="app-type-2" value="2" ><label for="app-type-2">Windows</label>
 					</div>
 				</div>
 			</div>
@@ -51,7 +51,7 @@
 					<input type="text" class="input-text" value="" placeholder="包名" id="app-id" name="appId" >
 				</div>
 			</div>
-			<div class="row cl">
+			<!-- <div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>是否强制升级：</label>
 				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
 					<div class="radio-box">
@@ -61,7 +61,7 @@
 						<input type="radio" class="radio mandatoryUpdate" name="mandatoryUpdate" id="mandatory-update-2" value="0" ><label for="mandatory-update-no">否</label>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<div class="row cl">
 				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 					<input id="submit" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
@@ -112,7 +112,7 @@
 		    appName: $('#app-name').val(),
 		    appType: $('.radio.app-type:checked').val(),
 			appId: $('#app-id').val(),
-		   	mandatoryUpdate: $('.radio.mandatoryUpdate:checked').val(),
+		   	// mandatoryUpdate: $('.radio.mandatoryUpdate:checked').val(),
 		};   	
 
 		if(apkInfo.appName === ''){

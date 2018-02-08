@@ -51,6 +51,17 @@
 				</div>
 			</div>
 			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>是否强制升级：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input type="radio" class="radio mandatoryUpdate" name="mandatoryUpdate" id="mandatory-update-0" value="0"><label for="mandatory-update-0">是</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" class="radio mandatoryUpdate" name="mandatoryUpdate" id="mandatory-update-1" value="1" ><label for="mandatory-update-1">否</label>
+					</div>
+				</div>
+			</div>
+			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span></span>安装包文件：</label>
 				<div class="formControls col-xs-8 col-sm-9">
 					<span class="btn-upload form-group" style="width:100%">
@@ -59,7 +70,6 @@
 					</span>
 				</div>
 			</div>
-
 			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3"><span class="required-label c-red">*</span>APP Logo：</label>
 				<div class="formControls col-xs-8 col-sm-9">
@@ -99,79 +109,11 @@
 		packageSize = 0;
 	var submitInfo = {};
 
-	function upLoadFile(file, callBack){
-
-		var formData = new FormData();
-		formData.append('file', file);
-		var fileUrl = '';
-		var xhrOnpregress = function(fun){
-			xhrOnpregress.onprogress = fun;
-
-			return function(){
-				var xhr = $.ajaxSettings.xhr();
-				if(typeof xhrOnpregress !== 'function'){
-					return xhr;
-				}
-				if(xhrOnpregress.onprogress && xhr.upload){
-					xhr.upload.onprogress = xhrOnpregress.onprogress;
-				}
-				return xhr;
-			};
-		};
-
-		$(document).unbind('ajaxStart');
-		$(document).ajaxStart(function(){
-			
-		});
-
-		ajax({
-			url: 'http://123.125.97.186:8083/file/fastdfs/uploadFile',
-			type: 'post',
-			timeout: 10 * 60 * 1000,
-			data: formData,
-			cache: false,
-			processData: false,
-		    contentType: false,
-		    beforeSend: function(){
-		    	layer.closeAll();
-		    	layer.open({
-				  type: 1,
-				  title: false,
-				  closeBtn: 0,
-				  area: ['430px', '100px'],
-				  content:  '<div style="padding:15px;">' +
-				  				'<p id="progress-text" >文件上传中 0%</p>' +   
-				  				'<div class="progress">'+
-					  				'<div class="progress-bar-success" style="background-color: rgb(234,234,234);">' + 
-					  					'<span id="progress-bar" class="sr-only" style="width:0%"></span>'+
-				  					'</div>' + 
-			  					'</div>' +
-			  				'<div>'
-				});
-		    },
-		   	xhr: xhrOnpregress(function(e){
-		   		var percent = Math.ceil(e.loaded / e.total * 100);
-		   		$('#progress-bar').css('width', percent + '%');
-		   		$('#progress-text').text('文件上传中 ' + percent + '%');
-		   		if(percent === 100){
-			   		setTimeout(function(){
-			   			layer.closeAll();
-			   		}, 1000);
-		   		}
-
-		   	}),
-		    success: function(response){
-		    	if(response.code === -100){
-		    		layer.msg('文件上传失败');
-		    	}
-		    	callBack && callBack(response);
-		    }
-		});
-
-		return fileUrl;
-	}
+	
 	
 	$(function(){
+
+		$('#mandatory-update-1').iCheck('check');
 
 		if(appInfo){
 			$('#app-name').val(appInfo.appName);
@@ -192,7 +134,7 @@
 						$('#update-instructions').val(versionInfo.updateInstructions);
 						$('#file-url-package').val(versionInfo.downloadFileUrl);
 						$('#file-url-logo').val(versionInfo.logUrl);
-
+						$('#mandatory-update-' + versionInfo.mandatoryUpdate).iCheck('check');
 						packageUrl = versionInfo.downloadFileUrl;
 						packageSize = versionInfo.fileSize;
 						logoUrl = versionInfo.logUrl;
@@ -220,7 +162,7 @@
 		var that = this;
 		var file = that.files[0];
 		packageSize = file.size;
-		packageUrl = upLoadFile(file, function(response){
+		upLoadFile(file, function(response){
 			packageUrl = response.value;
 			$(that).val('');
 		});
@@ -235,7 +177,8 @@
 		    updateInstructions: $('#update-instructions').val(),
 		   	downloadFileUrl: packageUrl,
 		   	fileSize: packageSize.toString(),
-		   	logUrl: logoUrl
+		   	logUrl: logoUrl,
+		   	mandatoryUpdate: $('.radio.mandatoryUpdate:checked').val()
 		};   	
 
 		if(submitInfo.versionName === ''){

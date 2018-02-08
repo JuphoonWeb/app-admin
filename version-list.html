@@ -34,13 +34,16 @@
 				<th >versionCode</th>
 				<th>创建日期</th>
 				<th>修改日期</th>
+				<th>是否强制升级</th>
 				<th >安装包下载地址</th>
+				<th>测试报告</th>
 				<th >操作</th>
 			</tr>
 		</thead>
 		<tbody id="install-package-tbody" class="text-c" >	
 		</tbody>
 	</table>
+	<input type="file" name="" id="file" style="visibility: hidden;">
 	<div class="pagination r" id="pagination"></div>
 	<div class="nodata" id="nodata">
 		<img src="static/images/nodata.svg" alt="">
@@ -58,6 +61,7 @@
 <script type="text/javascript">
 	var appInfo = JSON.parse(sessionStorage.getItem('appInfo'));
 	var isPageInit = false;
+	var versionId = null;
 	var searchPara = {
 		page: 1,
 		size: 10,
@@ -107,15 +111,26 @@
 			var sequence = (searchPara.page-1)*searchPara.size+i+1;
 			var createTime = dateFormat(list[i].createTime);
 			var changeTime = dateFormat(list[i].changeTime);
+			var mandatoryUpdate = (list[i].mandatoryUpdate === 1) ? 
+					'<span class="label label-secondary radius">否</span>':
+					'<span class="label label-success radius">是</span>';
+			var reportUrl = list[i].reportUrl ? 
+					'<a download href=" '+ list[i].reportUrl +' ">下载</a>':
+					'<a href="javascript: void(0);">-</a>';
+
 		    trs += '<tr>'+
 		    			'<td>'+ sequence + '</td>'+ 
 		    			'<td>'+ list[i].versionName + '</td>'+ 
 		    			'<td>'+ list[i].versionCode + '</td>'+ 
 		    			'<td>' + createTime + '</td>'+ 
 		    			'<td>' + changeTime + '</td>'+ 
+       	    			'<td>'+mandatoryUpdate+'</td>'+
 		    			'<td> <a download href=" '+ list[i].downloadFileUrl +' ">详情</a></td>'+
+		    			'<td>' + reportUrl + '</td>' +
 		    			'<td>'+
 							'<button onclick="editVersion('+ list[i].id +')" class="btn btn-secondary-outline radius">编辑'+
+							'</button>'+
+							'<button title="上传测试报告" onclick=uploadTestLog(' + list[i].id + ')  style="margin-left:15px" class="btn btn-primary-outline radius">测试报告'+
 							'</button>'+
 							'<button  onclick="deleteVersion(\'' + list[i].versionName +'\','+ list[i].id + ')" style="margin-left:15px" class="btn btn-danger-outline radius">删除'+
 							'</button>'+
@@ -149,6 +164,44 @@
 		sessionStorage.setItem('versionId', id);
 		layer_show('编辑版本','version-add-edit.html#edit','','500');
 	}
+
+
+
+	//上传测试报告
+	function uploadTestLog(id){
+		versionId = id;
+		$('#file').click();
+	}
+
+	$('#file').change(function(){
+
+		var formData = new FormData();
+		var file = $(this).get(0).files[0];
+		var fileUrl = '';
+
+		var fileUrl = upLoadFile(file, function(response){
+			$('#file').val('');
+			fileUrl = response.value;
+			ajax({
+				url: '/updateReportUrl',
+				type: 'post',
+				data: {
+					id: versionId,
+					reportUrl: fileUrl
+				},
+				success: function(response){
+					if(response.code === 1){
+						layer.msg('测试报告上传成功');
+
+						setTimeout(function(){
+							location.reload();	
+						}, 1000);
+					}
+				}
+			});
+		});
+
+	});
 
 	function deleteVersion(name, id){
 
